@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 let express = require("express"),
   path = require("path"),
   cors = require("cors"),
@@ -7,20 +11,25 @@ let express = require("express"),
   morgan = require("morgan"),
   mongoose = require("mongoose"),
   passport = require("passport"),
-  config = require("./config/database");
+  config = require("./config/database"),
+  favicon = require("serve-favicon");
 
 require("./config/passport")(passport);
-mongoose.connect(config.database, {
-  useCreateIndex: true,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+
+mongoose.connect(
+  `mongodb+srv://abclinkdbuser:${process.env.MONGODB_PASS}@abclinkprimary.8xsfc.mongodb.net/${process.env.MONGODB_NAME}?retryWrites=true&w=majority`,
+  {
+    useCreateIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 let app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
+app.set("view engine", "pug");
 
 app.use(cors());
 
